@@ -1,0 +1,94 @@
+// build_table.h
+#include "gather.h"
+#include "Database.h"
+#include "Record.h"
+#include "Table.h"
+using namespace std;
+
+Table build_user_table(vector<Record*> user_record)
+{
+    Table user_table;
+
+	// add attributes
+	vector<string> attributes_user = {"user_id", "name", "review_count", "friends","useful", "average_stars"};
+	user_table = Table(attributes_user);
+
+	// set key
+	user_table.setKey("user_id");
+
+	// add record 
+	for(int i = 0; i < user_record.size(); i++)
+		user_table.insertEntry(*user_record[i]);
+	return user_table;
+
+}
+
+Table build_business_table(vector<Record*> business_record)
+{
+	Table business_table;
+
+	// add attributes 
+	vector<string> attributes_business = {"business_id","name","city","state", "stars", "review_count"};
+	business_table = Table(attributes_business);
+
+	// add record 
+	for(int i = 0; i < business_record.size(); i++)
+		business_table.insertEntry(*business_record[i]);
+	return business_table;
+}
+
+Table build_review_table(vector<Record*> review_record)
+{
+	Table review_table;
+
+	// add attributes 
+	vector<string> attributes_review = {"review_id","user_id", "business_id","stars","date", "useful"};
+	review_table = Table(attributes_review);
+
+	// add record s
+	for(int i = 0; i < review_record.size(); i++)
+		review_table.insertEntry(*review_record[i]);
+	return review_table;
+
+}
+
+Database build_Database()
+{
+// declare three vector of record pointers
+    vector<Record*> users;
+    vector<Record*> businesses;
+    vector<Record*> reviews;
+
+// use gather function to read from jason file
+    gather(users, businesses, reviews);
+
+// use build_table function to build three different tables
+	Table user_table = build_user_table(users);
+    Table business_table = build_business_table(businesses);
+	Table review_table = build_review_table (reviews);
+
+	// contruct database
+	Database db;
+
+	// add three table to the database 
+	db.addTable(user_table,"user_table");
+	db.addTable(business_table,"business_table");
+	db.addTable(review_table,"review_table");
+
+	return db;
+}
+
+// call function build_Database() will return the database with three tables you need
+
+int main()
+{
+    Database db = build_Database();
+}
+
+
+
+
+
+
+
+
